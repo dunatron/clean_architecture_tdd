@@ -1,6 +1,7 @@
+import 'package:clean_architecture_tdd/core/usecases/usecase.dart';
 import 'package:clean_architecture_tdd/features/number_trivia/domain/entities/number_trivia.dart';
 import 'package:clean_architecture_tdd/features/number_trivia/domain/repositories/number_trivia_repository.dart';
-import 'package:clean_architecture_tdd/features/number_trivia/domain/usecases/get_concrete_number_trivia.dart';
+import 'package:clean_architecture_tdd/features/number_trivia/domain/usecases/get_random_number_trivia.dart';
 import 'package:dartz/dartz.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -14,28 +15,26 @@ class NumberTriviaRepositoryTest extends Mock
 @GenerateMocks([NumberTriviaRepositoryTest])
 Future<void> main() async {
   late MockNumberTriviaRepositoryTest numberTriviaRepository;
-  late GetConcreteNumberTrivia usecase;
+  late GetRandomNumberTrivia usecase;
 
   setUp(() {
     numberTriviaRepository = MockNumberTriviaRepositoryTest();
-    usecase = GetConcreteNumberTrivia(numberTriviaRepository);
+    usecase = GetRandomNumberTrivia(numberTriviaRepository);
   });
 
-  const tNumber = 1;
   const tNumberTrivia = NumberTrivia(
     text: '12 much better than the rigid 10',
     number: 12,
   );
 
-  test('should get trivia number from the repository', () async {
+  test('should get trivia from the repository', () async {
     // arrange
-    when(numberTriviaRepository.getConcreteNumberTrivia(tNumber))
+    when(numberTriviaRepository.getRandomNumberTrivia())
         .thenAnswer((_) async => const Right(tNumberTrivia));
     // act
-    // final result = await usecase.execute(number: tNumber);
-    final result = await usecase(const Params(number: tNumber));
+    final result = await usecase(NoParams());
     // assert
     expect(result, const Right(tNumberTrivia));
-    verify(numberTriviaRepository.getConcreteNumberTrivia(tNumber));
+    verify(numberTriviaRepository.getRandomNumberTrivia());
   });
 }
